@@ -1,0 +1,48 @@
+
+ NOTES FOR THE FUTURE 
+ 
+ Microsoft is now pushing for its new format XPS; WinVista comes with a virtual
+ XPS printer by default and an XPS printer can be installed also on WinXP.
+ The XPS format is XML-based thus it should be easy to transform it in SVG format.
+ The user would thus print first in XPS document using MS's own virtual printer
+ and then using an XPS->SVG converter would get the final SVG.
+ For more info about XPS:
+   www.microsoft.com/whdc/xps/default.mspx
+
+ INSTALLER
+
+ -> disable nsis installer window when emfprinter_inst.exe is running
+ -> fix the worker thread logic
+
+ DRIVER
+
+ -> write the SVG output support
+ -> fix the wait window (creating it from a secondary thread which
+    just processes the wait wnd messages would be much more clean!)
+ -> remove spooler-format-only EMF records from generated EMFs!
+    (probably a new mode should be added to emfutils and then the driver
+     could just do a post-process using it)
+ -> printing from some programs like MSWord does not work perfectly.
+    In particular on WinXP printing MSWord's draw stuff (Wordart scripts
+    for example) produces wrong output. Perhaps because of wrong driver
+    settings which force MSWord to send to the spooler "wrong" (e.g. black
+    and white only) data??
+    Printing from Notepad, MSPaint, Firefox and a few other apps has been tested
+    successfully instead.
+ 
+ DRIVER UI
+ 
+ -> eventually fix the copy between the internal devmode and the given devmode
+    in DrvDocumentSheet 
+ -> make the DPI of the printer configurable: when printing in a raster format
+    through ImageMagick the final file is typically huge because the high DPI
+    values; when rasterizing the DPI should be lower!
+
+ EMFUTILS
+ 
+ -> do the TODO :)
+ -> add an xpsconvert mode which converts XPS documents to EMFs/SVG.
+    XPS is the new Microsoft's document format.
+    Virtual XPS printers exist for WinXP and is shipped by default with
+    Windows Vista. XPS docs are XML docs and are fully documented.
+    An XPS => SVG converter should be easy to create.

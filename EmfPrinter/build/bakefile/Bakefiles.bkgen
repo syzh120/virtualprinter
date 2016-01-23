@@ -1,0 +1,22 @@
+<?xml version="1.0" ?>
+<!-- $Id: Bakefiles.bkgen 1051 2007-07-08 19:34:25Z vaclavslavik $ -->
+
+<bakefile-gen>
+
+    <input>emfprinter.bkl</input>
+    <add-formats>msvc6prj,msvs2003prj,msvs2005prj,msvc</add-formats>
+  
+    <add-flags formats="msvc6prj">
+        -o ../msvc6/emfprinter.dsw
+    </add-flags>
+    <add-flags formats="msvs2003prj">
+        -o ../msvc7/emfprinter.sln
+    </add-flags>
+    <add-flags formats="msvs2005prj">
+        -o ../msvc8/emfprinter.sln
+    </add-flags>
+    <add-flags formats="msvc">
+        -o ../makefiles/makefile.vc
+    </add-flags>
+    
+</bakefile-gen>

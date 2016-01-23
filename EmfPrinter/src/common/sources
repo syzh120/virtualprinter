@@ -1,0 +1,31 @@
+# This file is used by Microsoft's BUILD tool
+# (see docs/tech.txt for more info)
+
+TARGETNAME=common
+TARGETPATH=obj
+TARGETTYPE=LIBRARY
+
+INCLUDES=
+
+# NOTE: ANSI builds won't work because almost everywhere
+#       for format strings we used %ws instead of %s!
+C_DEFINES=$(C_DEFINES) -DSTRICT -DUNICODE -D_UNICODE -DUMODE -DUSERMODE_DRIVER
+C_DEFINES=$(C_DEFINES) -DWIN32 -D_CONSOLE -D_VISUALC_ -DNeedFunctionPrototypes -D_DLL
+
+USER_C_FLAGS=/EHsc
+
+USE_MSVCRT=1
+USE_STL=1
+MSC_WARNING_LEVEL=$(MSC_WARNING_LEVEL) /WX /W3
+
+SOURCES=dlg.cpp                \
+		debug.cpp              \
+        devmode.cpp            \
+        devmodeV351.cpp        \
+        devmodeV400.cpp        \
+        devmodeV401.cpp        \
+        extdevmode.cpp         \
+        printerutils.cpp       \
+        spoolerdata.cpp        \
+        utils.cpp
+

@@ -1,0 +1,11 @@
+LIBRARY emfprinter_ui
+
+EXPORTS
+    DllMain
+    DrvDeviceCapabilities
+    DevQueryPrintEx
+    DrvDevicePropertySheets
+    DrvDocumentPropertySheets
+    DrvConvertDevMode
+    DrvPrinterEvent
+	DrvDocumentEvent

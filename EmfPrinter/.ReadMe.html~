@@ -1,0 +1,156 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+	<head>
+		<meta content="text/html; charset=ISO-8859-1" http-equiv="content-type">
+		<title>EmfPrinter ReadMe</title><meta content="Francesco Montorsi" name="author"><link rel="stylesheet" href="docs/style.css" type="text/css"></head>
+	<body>
+		<h1><a href="http://emfprinter.sourceforge.net">EmfPrinter</a>
+			<span class="author">by <a href="mailto:frm@NOSPAM@users.sourceforge.net">Francesco Montorsi</a></span></h1>
+            
+            
+		<h2>What is it?</h2>
+		EmfPrinter is a
+		<span style="font-weight: bold; font-style: italic;">virtual printer driver</span>
+		for Windows 2000 and higher (tested only on Windows XP so far), which allows 
+		you to create
+		<span style="font-weight: bold;">EMF</span>
+		(<span style="font-style: italic;">Enhanced Meta File</span>) and
+        <span style="font-weight: bold;">WMF</span>
+		(<span style="font-style: italic;">Windows Meta File</span> - the old version of EMF)
+        vector images from any Windows application which supports printing.<br>
+        Additionally, the printer also supports more than <em>100</em> raster formats (PNG, JPG, TIFF, BMP, etc)
+        in case you don't need vector images.<br><br>
+        
+        <div style="float:right; margin: 10px">
+            <a href="docs/screen2.png">
+                <img src="docs/screen2.png" alt="Screenshot of EmfPrinter" height="200" border="0">
+            </a>
+        </div>
+
+		Some nice things about this virtual printer:<br>
+		<ol>
+			<li>
+				it's
+				<span style="font-weight: bold;">Open Source</span>: free as in freedom! You can explore
+                the sources and make your own modifications (see <a href="license/gnugpl.txt">the license</a>);
+            </li>
+                
+            <li>it 
+				exports data directly in a
+				<span style="font-weight: bold;">vector format</span>, without rasterizations; 
+                for more info about the difference between raster and vector 
+				formats, please see the <a href="http://en.wikipedia.org/wiki/Vector_graphics">Wikipedia</a>;</li>
+                
+            <li>very
+				<span style="font-weight: bold;">easy to install
+				and use</span> (and also to uninstall actually!)
+            </li>
+            
+            <li>include all the <strong>utilities</strong> you need to edit the EMFs or to print directly in
+                raster formats, if you really need, which are much easier to edit.
+            </li>
+        </ol>
+
+        In conclusion, basically EmfPrinter allows you to add a &quot;Save as&quot; command
+        which supports EMF, WMF and lots of raster formats to all Windows application which have
+        supports printing. For a complete list of supported formats see below.
+                
+		<h2>Why EMF?</h2>
+		Why export printed data in EMF instead of another vector format, much more 
+		widespread like&nbsp;SVG? It's simple: the Windows GDI printing system provides 
+		data to the printer drivers directly in EMF format; thus it's "easy" to extract 
+		EMFs from printed data using a virtual printer driver.<br>
+		<br>
+		EMF is an <em>undocumented</em> format (for the few reverse-engineered infos look <a href="http://www.undocprint.org/formats/winspool/emf">
+			here</a>) which however is very easy to render on Windows and is supported 
+		by all programs of the Microsoft Office suite and many others. Unfortunately 
+		it's also very difficult to edit preserving its "vectorness".<br><br>
+        That's also why a TODO item for this project is to support also the SVG format one in day in future;
+        it's an Open format and is supported by the famous free vector editor <a href="http://www.inkscape.org">InkScape</a>.
+        
+        
+        <h2>List of supported formats</h2>
+        The list of vector formats currently supported is: EMF, WMF (SVG is work-in-progress!).<br><br>
+        The complete list of raster formats supported (thanks to <a href="http://www.imagemagick.org">ImageMagick</a>!) is: AVS, BMP, BMP2, BMP3, CIN, CIP, CLIP, CMYK, CMYKA, CUR, DCX, EPDF, EPI, EPS, EPS2, EPS3, EPSF, EPSI, EPT, EPT2, EPT3, FAX, FITS, FTS, G3, GIF, GIF87, HTM, HTML, ICB, ICO, ICON, INFO, IPL, JNG, JP2, JPC, JPEG, JPG, JPX, M2V, MAP, MAT, MATTE, MIFF, MNG, MPC, MPEG, MPG, MSL, MSVG, MTV, MVG, NULL, OTB, PAL, PALM, PAM, PBM, PCD, PCDS, PCL, PCT, PCX, PDB, PDF, PFM, PGM, PICON, PICT, PJPEG, PNG, PNG24, PNG32, PNG8, PNM, PPM, PS, PS2, PS3, PSD, PTIF, RAS, RGB, RGBA, RGBO, SGI, SHTML, SUN, SVG, SVGZ, TEXT, TGA, TIFF, TXT, UIL, UYVY, VDA, VICAR, VID, VIFF, VST, WBMP, X, XBM, XPM, XV, XWD, YCbCr, YCbCrA, YUV.
+
+
+		<h2>License</h2>
+		The license is the <a href="license/gnugpl.txt">GNU General Public license</a> version 2.
+        
+        <h2>Downloads</h2>
+		The EmfPrinter installer and sources can be downloaded from SourceForge's 
+		<a href="http://sourceforge.net/project/showfiles.php?group_id=204465">download page</a>.<br><br>
+        
+        For a brief changelog of the new version you can look <a href="ChangeLog.txt">here</a>...
+
+<!--
+        Note that version 0.2.0 has some known issues:
+        <ul>
+			<li>Output filenames cannot be chosen and are generated automatically appending to the document name the page number and .emf/wmf extension;also output folder cannot be chosen and is fixed to <tt>C:\</tt></li>
+            <li>both WMF and EMF files are always generated, not configurable too</li>
+            <li>the generated EMF/WMF files typically have a large white area which surrounds them; this is because the virtual printer tells Windows it's using an A4 paper. However you can remove unwanted white margins using the "emfutils.exe" utility in "crop" mode. The "emfutils.exe" tool is installed together with EmfPrinter in your Windows folder so that it's always in the PATH and you can invoke it from the MSDOS prompt.</li>
+        </ul>
+-->
+                    
+		<h2>Development</h2>
+		If you are a developer and you are interested to EmfPrinter please consider the 
+		idea of providing patches/help with the <a href="http://emfprinter.svn.sourceforge.net/viewvc/emfprinter/trunk/EmfPrinter/docs/todo.txt?view=markup">
+			TODO items</a>... the author has vey few free time and further development 
+		isn't going to happen soon.<br>
+		<br>
+		I strived to make the code as easier as possible to build and extend; it has no 
+		external dependencies, is written completely in C/C++ and just requires a good 
+		setup of your build environment. You can browse the sources <a href="http://emfprinter.svn.sourceforge.net/viewvc/emfprinter/">
+			here</a>.<br>
+            
+            
+		<h2>Bugs, Patches</h2>
+		For reporting bugs and patches please look at the <a href="http://sourceforge.net/projects/emfprinter">
+			SourceForge project page</a>.
+		<h2>Links</h2>
+		<h3>Other similar Open Source projects:</h3>
+		<ul>
+			<li>
+				Mabuse's <a href="http://www.mabuse.de/tech-vprinter.mhtml">Virtual Printer</a></li><li>Vipin 
+				Aravind's <a href="http://sourceforge.net/projects/printmirror">PrintMirror</a></li><li><a href="http://sourceforge.net/projects/imageprinter/">Virtual 
+					Image Printer</a> which however exports only in raster formats<span style="font-weight: bold;"></span></li></ul>
+		<span style="font-weight: bold;"></span><h3>Other utilities:</h3>
+		<ul>
+			<li>
+				<a href="http://autotrace.sourceforge.net/">AutoTrace</a> for transforming 
+				raster images to vector ones
+            </li>
+            <li>
+                <a href="http://delineate.sourceforge.net">Delineate</a> another raster-to-vector converter
+            </li>
+            <li>Michael H. Overlin's <a href="http://sourceforge.net/projects/posterprinter">
+					PosterPrinter</a>: I used it as codebase for&nbsp;this project and even if 
+				I changed almost any source line, it was indispensable - thanks Michael!
+            </li>
+        </ul>
+
+		<span style="font-weight: bold;"></span><h3>Miscellaneous websites:</h3>
+		<ul>
+			<li>
+				<a href="http://www.undocprint.org/">Undocumented Printing</a> provides technical info
+                about some undocumented aspects of Windows Spooler and EMF files and more.
+            </li>
+        </ul>
+
+
+
+		<hr style="width: 100%; height: 2px;">
+		<table style="text-align: left; width: 100%;" border="0" cellpadding="2" cellspacing="2">
+			<tbody>
+				<tr>
+					<td><a href="http://sourceforge.net/projects/emfprinter"><img style="border: 0px solid ; width: 125px; height: 37px;" src="http://sflogo.sourceforge.net/sflogo.php?group_id=204465&amp;type=4"
+								alt="SourceForge.net Logo"></a></td>
+					<td style="text-align: right;"><a href="http://sourceforge.net/donate/index.php?group_id=204465"><img src="http://images.sourceforge.net/images/project-support.jpg" alt="Support This Project"
+								border="0" height="32" width="88"></a><a href="http://sourceforge.net/donate/index.php?group_id=204465">
+						</a>
+					</td>
+				</tr>
+			</tbody></table>
+
+	</body>
+</html>

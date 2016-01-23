@@ -1,0 +1,24 @@
+Microsoft Visual Studio Solution File, Format Version 8.00
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PrinterCommon", "emfprinter_PrinterCommon.vcproj", "{92C240F6-12BA-5844-9A1F-E2F834662B42}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PrinterDriver", "emfprinter_PrinterDriver.vcproj", "{81DF2C9B-319B-5187-A461-10C78044B9D4}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DriverUI", "emfprinter_DriverUI.vcproj", "{A98256F7-C2AD-564F-BEE6-AABFDBADED78}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Default|Win32 = Default|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{92C240F6-12BA-5844-9A1F-E2F834662B42}.Default|Win32.ActiveCfg = Default|Win32
+		{92C240F6-12BA-5844-9A1F-E2F834662B42}.Default|Win32.Build.0 = Default|Win32
+		{81DF2C9B-319B-5187-A461-10C78044B9D4}.Default|Win32.ActiveCfg = Default|Win32
+		{81DF2C9B-319B-5187-A461-10C78044B9D4}.Default|Win32.Build.0 = Default|Win32
+		{A98256F7-C2AD-564F-BEE6-AABFDBADED78}.Default|Win32.ActiveCfg = Default|Win32
+		{A98256F7-C2AD-564F-BEE6-AABFDBADED78}.Default|Win32.Build.0 = Default|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
+

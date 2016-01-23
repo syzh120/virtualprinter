@@ -1,0 +1,26 @@
+<?xml version="1.0" ?>
+<!-- $Id: Bakefiles.bkgen 1051 2007-07-08 19:34:25Z vaclavslavik $ -->
+
+<bakefile-gen>
+
+    <input>emfutils.bkl</input>
+    <add-formats>msvc,msvc6prj,msvs2003prj,msvs2005prj</add-formats>
+  
+    <add-flags>-I W:/wxWidgets/build/bakefiles/wxpresets</add-flags>
+  
+    <add-flags formats="msvc6prj">
+        -o ../msvc6/emfutils.dsw
+    </add-flags>
+    <add-flags formats="msvs2003prj">
+        -o ../msvc7/emfutils.sln
+    </add-flags>
+    <add-flags formats="msvs2005prj">
+        -o ../msvc8/emfutils.sln
+    </add-flags>
+
+    <add-flags formats="msvc">
+        -o ../cmdline/makefile.vc
+    </add-flags>
+
+    
+</bakefile-gen>

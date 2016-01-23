@@ -1,0 +1,7 @@
+# File:   .htaccess
+# Author: Francesco Montorsi
+# Note:   these settings are *very* important for the website; don't edit !
+
+# this is to make Apache see Readme.html before index.html
+# NOTE: keep index.html listed somewhere otherwise DOCUMENTATION folders won't open 'index.html' automatically...
+DirectoryIndex ReadMe.html index.html

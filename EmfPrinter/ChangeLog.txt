@@ -1,0 +1,31 @@
+ 
+ EmfPrinter 0.4.0 - released ??
+
+ - TODO
+
+
+ EmfPrinter 0.3.0 - released 3/11/2007
+
+ - fixed property sheets
+ - added user-override option which popups a file dialog
+   at the end of printing
+ - improved emfutils utility adding new working modes and
+   a new GUI for low-level EMF editing
+ - added ImageMagick support for raster formats
+ - added crop & post-generation command execution
+ - removed the print processor; everything now is done by the driver
+   itself - this also removed various problems in the flushing of the
+   printer queue
+ - lots of bug fixing
+
+
+ EmfPrinter 0.2.0 - released 05/09/2007
+
+ - fixed the rclFrame and rclBounds of the ENHMETAHEADER of
+   the output files
+ - added EmfUtils tool to crop EMFs
+
+
+ EmfPrinter 0.1.0 - released 04/09/2007
+
+ - first release

@@ -1,0 +1,43 @@
+# This file is used by Microsoft's BUILD tool
+# (see docs/tech.txt for more info)
+
+TARGETNAME=emfprinter_drv
+TARGETPATH=obj
+TARGETTYPE=DYNLINK			# as DDK says for user-mode drivers TARGETTYPE is DYNLINK
+TARGETLIBS=$(SDK_LIB_PATH)\winspool.lib \
+           $(SDK_LIB_PATH)\user32.lib   \
+           $(SDK_LIB_PATH)\kernel32.lib \
+           $(SDK_LIB_PATH)\advapi32.lib \
+           $(DDK_LIB_PATH)\umpdddi.lib  \
+           $(SDK_LIB_PATH)\comdlg32.lib \
+           $(SDK_LIB_PATH)\ntdll.lib    \
+           $(SDK_LIB_PATH)\win32k.lib   \
+           $(SDK_LIB_PATH)\gdi32.lib    \
+           ..\common\obj$(BUILD_ALT_DIR)\*\common.lib
+
+USE_MSVCRT=1
+USE_STL=1
+USER_C_FLAGS=/EHsc 
+
+DLLDEF=driver.def
+DLLORDER=driver.prf
+DLLENTRY=_DllMainCRTStartup
+
+INCLUDES=..\common
+
+# NOTE: ANSI builds won't work because almost everywhere
+#       for format strings we used %ws instead of %s!
+C_DEFINES=$(C_DEFINES) -DSTRICT -DUNICODE -D_UNICODE -DUMODE -DUSERMODE_DRIVER
+
+C_DEFINES=$(C_DEFINES) -DWIN32 -D_CONSOLE -D_VISUALC_ -DNeedFunctionPrototypes -D_DLL
+
+
+
+NTPROFILEINPUT=yes
+MSC_WARNING_LEVEL=$(MSC_WARNING_LEVEL) /WX /W3
+
+SOURCES=waitdlg.cpp \
+		driver.cpp \
+        driver.rc
+
+

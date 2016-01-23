@@ -1,0 +1,4 @@
+# This file is used by Microsoft's BUILD tool
+# (see docs/tech.txt for more info)
+
+DIRS=src

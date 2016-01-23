@@ -1,0 +1,25 @@
+<?xml version="1.0" ?>
+<makefile>
+    <!-- This is a bakefile. See http://www.bakefile.org for more info. -->
+    
+    <include file="presets/wx.bkl"/>
+
+    <set-srcdir>../..</set-srcdir>
+    
+    <exe id="EmfUtils" template="wx,wxlike">
+        <sources>$(fileList('src/*.c*'))</sources>
+        <headers>$(fileList('src/*.h*'))</headers>
+        
+        <win32-res>$(fileList('src/*.rc'))</win32-res>
+        <exename>emfutils</exename>
+       
+        <dirname>../..</dirname>
+       
+        <app-type>gui</app-type>
+        
+        <wx-lib>adv</wx-lib>
+        <wx-lib>core</wx-lib>
+        <wx-lib>base</wx-lib>
+    </exe>
+    
+</makefile>

@@ -1,0 +1,51 @@
+#
+# VERY IMPORTANT: with the newer WDK do not try to build this installer using the "build" utility;
+#                 you'll get an EXE which says "invalid win32 application" when executed.
+#                 use the makefile in build\makefiles folder instead.
+#                 This file is left here just for historical purpose.
+# 
+
+
+# This file is used by Microsoft's BUILD tool
+# (see docs/tech.txt for more info)
+
+TARGETNAME=emfprinter_inst
+TARGETTYPE=PROGRAM
+TARGETLIBS=\
+           $(SDK_LIB_PATH)\user32.lib                   \
+           $(SDK_LIB_PATH)\kernel32.lib                 \
+           $(SDK_LIB_PATH)\Gdi32.lib                    \
+           $(SDK_LIB_PATH)\winspool.lib                 \
+           $(SDK_LIB_PATH)\shell32.lib                  \
+           $(SDK_LIB_PATH)\win32k.lib                   \
+           $(SDK_LIB_PATH)\comctl32.lib                 \
+           $(SDK_LIB_PATH)\Winmm.lib                    \
+           $(SDK_LIB_PATH)\ole32.lib                    \
+           $(SDK_LIB_PATH)\Uuid.lib                     \
+           $(SDK_LIB_PATH)\Lz32.lib
+
+# these lines tell the linker to build a win GUI app:
+UMTYPE=windows
+UMBASE=0x01000000
+UMENTRY=wwinmain
+
+USE_MSVCRT=1
+UNICODE=1
+
+# NOTE: ANSI builds won't work because almost everywhere
+#       for format strings we used %ws instead of %s!
+C_DEFINES=$(C_DEFINES) -DUNICODE -D_UNICODE -DSTRICT -DBUILDING_INSTALLER
+
+SOURCES=addport.cpp \
+		debug.cpp \
+		dlg.cpp \
+		installer.cpp \
+		installerdlg.cpp \
+		installerutils.cpp \
+		printerutils.cpp \
+		thread.cpp \
+		utils.cpp \
+		winmain.cpp \
+		workerthread.cpp \
+        resource.rc
+

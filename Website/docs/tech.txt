@@ -1,0 +1,117 @@
+
+ SETUP OF YOUR BUILD ENVIRONMENT
+ ===============================
+
+ VERY IMPORTANT: the MSVC projects in the build\ subfolder are just for
+                 browing and editing the sources, not for building them!
+
+ 1) download the MS Windows Server 2008 WDK (Windows Driver Kit). The WDK is free.
+    The version which I used is the WDK 6001.18001
+
+ 2) click on the
+      "Start->Programs->Windows Driver Kits->WDK 6001.18001->Build Environment"
+    menu item and select the 
+     - Windows XP x86 Checked build environment for a debugging build, or
+    -  Windows XP x86 Free build environment for a release build.
+
+    I use the windows XP environment to build for Windows XP and Windows 2003 Server.
+
+ 3) once you have the DOS Shell build environment, change directory to
+    the the root directory for the source (e.g. C:\EmfPrinter).
+    
+ 4) execute the command "build"
+ 
+
+ HOW TO BUILD THE DRIVER FROM MSVC IDEs
+ ======================================
+
+ If you are interested to the development of the driver (e.g. you want to
+ fix a bug or create an enhancement or modify it to suit your needs), then
+ you'll want to use your favourite IDE to edit sources and compile.
+ 
+ Here I explain how to configure the "build" utility of DDK to work together 
+ with MSVC++ IDEs:
+
+ a) get MSVC6, MSVC7.x (aka MSVC++2003) or MSVC8 (aka MSVC++2005)
+
+ b) copy ddkbuild.bat (you can find it in the 'docs' folder) in C:\windows\system32
+
+ c) go in Control Panel -> System -> Advanced -> Environment variables and add
+    a "WXPBASE" env var pointing to your DDK root, e.g. C:\WinDDK\6001.18001
+
+ d) right-click on the project you want to build, e.g. PrinterInstaller and choose
+    "Properties"; now click on "configuration properties -> Configuration type" and
+    choose "Makefile". Click Apply (but don't exit the properties window).
+    The available properties should all change and be greatly reduced.
+
+ e) Click on "NMake" and then "command line"; copy and paste:
+
+     ddkbuild.cmd -WXP checked ..\..
+
+    then click Ok and exit the property window.
+
+ f) click Build -> Build PrinterInstaller and you're done.
+
+ More info about BUILD tool setup with MSVC at: http://ddkwizard.assarbad.net/
+
+
+ HOW TO DEBUG THE DRIVER
+ =======================
+ 
+ Just put a breakpoint where you want to break execution and then use
+ MSVC's abilities to attach it to a running process: attach to the application
+ from which you're going to print to debug the print processor, or the printer UI.
+
+ Attach to the spoolsv.exe process to debug the driver itself.
+
+ Sometimes it may happen that a fatal bug causes a reboot of your Windows;
+ in these cases ensure you have the "Reboot automatically" flag disabled in
+ the Control Panel->System->Advanced->Boot and recover.
+ You may also want to add the /DEBUG boot option to Windows if you want
+ to do kernel debugging with WinDbg.
+ In any case take a look at windbg.html file found in this folder or google
+ for "windbg crash dump analysis".
+ 
+
+ NICE UTILITIES IN THE DEVELOPMENT OF THE DRIVER
+ ===============================================
+ 
+ http://www.microsoft.com/technet/sysinternals/utilities/debugview.mspx
+ http://www.microsoft.com/technet/sysinternals/Utilities/ProcessExplorer.mspx
+
+ You can seek help on this newsgroup:
+    microsoft.public.development.device.drivers
+  which you can find on the MS newsgroup server:
+    msnews.microsoft.com
+  or browse online here:
+    http://groups.google.com/group/microsoft.public.development.device.drivers/topics
+
+
+ HOW TO ENSURE YOU'RE RUNNING YOUR JUST-PATCHED VERSION OF THE DRIVER
+ ====================================================================
+
+ I use the build\reinstall.bat script.
+ The trick to understand which version of the driver you're using is to
+ use DebugView: any log line printed by EmfPrinter stuff will begin with
+ [build_time] (e.g. [22:03:04]).
+
+ That's because DEBUGMESSAGE macro contains embeds a __TIME__ printf.
+
+
+ CONVENTIONS USED IN THE SOURCE CODE
+ ===================================
+
+ Basic source code formatting rules can be deduced by looking directly
+ at the code. Please note that indentation is 4 spaces, no tabs.
+
+ Data structures which begin with "emf" or "pemf" are specific of this driver.
+
+
+ COPYRIGHT
+ =========
+ 
+ Most of the code was copied and then revised from ImageResizer CVS repository
+ of the http://sourceforge.net/projects/posterprinter/ project by Michael H. Overlin.
+
+ In turn, part of his code was adapted from "genprint" example of Windows DDK.
+

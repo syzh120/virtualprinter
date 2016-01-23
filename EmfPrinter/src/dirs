@@ -1,0 +1,15 @@
+# This file is used by Microsoft's BUILD tool
+# (see docs/tech.txt for more info)
+
+DIRS=common         \
+     driver         \
+     ui
+
+# VERY IMPORTANT: since Microsoft changed the DDK into the WDK
+#                 I've been unable to produce a working .EXE
+#                 installer using the "build" utility used to
+#                 compile and link the driver.
+#                 Thus this 'dirs' file does not contain the
+#                 'installer' folder; the installer should be
+#                 built using the makefile.vc in build/makefiles
+#                 from the MSVC++'s DOS shell.

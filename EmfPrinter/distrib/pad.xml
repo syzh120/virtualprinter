@@ -1,0 +1,106 @@
+<?xml version="1.0" ?>
+<XML_DIZ_INFO>
+	<MASTER_PAD_VERSION_INFO>
+		<MASTER_PAD_VERSION>3.01</MASTER_PAD_VERSION>
+		<MASTER_PAD_EDITOR>PADGen 3.0.1.35 http://www.padgen.org</MASTER_PAD_EDITOR>
+		<MASTER_PAD_INFO>Portable Application Description, or PAD for short, is a data set that is used by shareware authors to disseminate information to anyone interested in their software products. To find out more go to http://www.asp-shareware.org/pad</MASTER_PAD_INFO>
+	</MASTER_PAD_VERSION_INFO>
+	<Company_Info>
+		<Company_Name>Sourceforge, Inc.</Company_Name>
+		<Address_1>46939 Bayside Parkway</Address_1>
+		<Address_2 />
+		<City_Town>Fremont</City_Town>
+		<State_Province>CA</State_Province>
+		<Zip_Postal_Code>94538</Zip_Postal_Code>
+		<Country>USA</Country>
+		<Company_WebSite_URL>http://sourceforge.net</Company_WebSite_URL>
+		<Contact_Info>
+			<Author_First_Name>Francesco</Author_First_Name>
+			<Author_Last_Name>Montorsi</Author_Last_Name>
+			<Author_Email>fr_m@hotmail.com</Author_Email>
+			<Contact_First_Name>Francesco</Contact_First_Name>
+			<Contact_Last_Name>Montorsi</Contact_Last_Name>
+			<Contact_Email>fr_m@hotmail.com</Contact_Email>
+		</Contact_Info>
+		<Support_Info>
+			<Sales_Email>fr_m@hotmail.com</Sales_Email>
+			<Support_Email>fr_m@hotmail.com</Support_Email>
+			<General_Email>fr_m@hotmail.com</General_Email>
+			<Sales_Phone />
+			<Support_Phone />
+			<General_Phone />
+			<Fax_Phone />
+		</Support_Info>
+	</Company_Info>
+	<Program_Info>
+		<Program_Name>EmfPrinter</Program_Name>
+		<Program_Version>0.3.0</Program_Version>
+		<Program_Release_Month>11</Program_Release_Month>
+		<Program_Release_Day>03</Program_Release_Day>
+		<Program_Release_Year>2007</Program_Release_Year>
+		<Program_Cost_Dollars>0</Program_Cost_Dollars>
+		<Program_Cost_Other_Code />
+		<Program_Cost_Other />
+		<Program_Type>Freeware</Program_Type>
+		<Program_Release_Status>Beta</Program_Release_Status>
+		<Program_Install_Support>Install and Uninstall</Program_Install_Support>
+		<Program_OS_Support>WinNT 4.x,Windows2000,WinXP,Windows2003,Windows Vista Starter,Windows Vista Home Basic,Windows Vista Home Premium,Windows Vista Business,Windows Vista Enterprise,Windows Vista Ultimate,Windows Vista Home Basic x64,Windows Vista Home Premium x64,Windows Vista Business x64,Windows Vista Enterprise x64,Windows Vista Ultimate x64</Program_OS_Support>
+		<Program_Language>English</Program_Language>
+		<Program_Change_Info />
+		<Program_Specific_Category>Utilities</Program_Specific_Category>
+		<Program_Category_Class>System Utilities::Printer</Program_Category_Class>
+		<Program_System_Requirements />
+		<File_Info>
+			<File_Size_Bytes>600000</File_Size_Bytes>
+			<File_Size_K>585</File_Size_K>
+			<File_Size_MB>0.57</File_Size_MB>
+		</File_Info>
+		<Expire_Info>
+			<Has_Expire_Info>N</Has_Expire_Info>
+			<Expire_Count />
+			<Expire_Based_On>Days</Expire_Based_On>
+			<Expire_Other_Info />
+			<Expire_Month />
+			<Expire_Day />
+			<Expire_Year />
+		</Expire_Info>
+	</Program_Info>
+	<Program_Descriptions>
+		<English>
+			<Keywords>emf,printer,emfprinter,wmf,wmfprinter,utility,crop,free,open,source,vector,graphics</Keywords>
+			<Char_Desc_45>A virtual printer driver for exporting to EMF</Char_Desc_45>
+			<Char_Desc_80>EmfPrinter is a virtual printer driver, which allows you to create EMF easily</Char_Desc_80>
+			<Char_Desc_250>EmfPrinter is a virtual printer driver  for Windows 2000 and higher, which allows you to create EMF  (Enhanced Meta File) vector images from any Windows application which supports printing.</Char_Desc_250>
+			<Char_Desc_450>EmfPrinter is a virtual printer driver  for Windows 2000 and higher (tested only on Windows XP so far), which allows you to create EMF  (Enhanced Meta File) vector images from any Windows application which supports printing. The driver is Open Source. Enhanced Metafiles can then be embedded in lots of other Widows (and non-Windows!) programs (word processor, LaTex editors, image software, etc etc) without resolution losses!</Char_Desc_450>
+			<Char_Desc_2000>EmfPrinter is a virtual printer driver  for Windows 2000 and higher (tested only on Windows XP so far), which allows you to create EMF  (Enhanced Meta File) vector images from any Windows application which supports printing.
+The nice things about this virtual printer are:
+
+   1. it's Open Source: free as in freedom!
+   2. it exports data directly in a vector format, without rasterizations; for more info about raster vs vector formats, please see the Wikipedia
+   3. very easy to install and use (and also to uninstall actually!)
+
+Why EMF?
+Why export printed data in EMF instead of another vector format, much more widespread like SVG? It's simple: the Windows GDI printing system provides data to the printer drivers directly in EMF format; thus it's "easy" to extract EMFs from printed data using a virtual printer driver.</Char_Desc_2000>
+		</English>
+	</Program_Descriptions>
+	<Web_Info>
+		<Application_URLs>
+			<Application_Info_URL>http://emfprinter.sourceforge.net</Application_Info_URL>
+			<Application_Order_URL />
+			<Application_Screenshot_URL>http://emfprinter.sourceforge.net/screen1.png</Application_Screenshot_URL>
+			<Application_Icon_URL>http://emfprinter.sourceforge.net/icon.gif</Application_Icon_URL>
+			<Application_XML_File_URL>http://emfprinter.sourceforge.net/pad.xml</Application_XML_File_URL>
+		</Application_URLs>
+		<Download_URLs>
+			<Primary_Download_URL>http://downloads.sourceforge.net/emfprinter/EmfPrinter-0.3.0.exe</Primary_Download_URL>
+			<Secondary_Download_URL />
+			<Additional_Download_URL_1 />
+			<Additional_Download_URL_2 />
+		</Download_URLs>
+	</Web_Info>
+	<Permissions>
+		<Distribution_Permissions />
+		<EULA> GNU GENERAL PUBLIC LICENSE Version 2, June 1991
+</EULA>
+	</Permissions>
+</XML_DIZ_INFO>

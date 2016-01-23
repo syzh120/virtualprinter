@@ -1,0 +1,1 @@
+This folder contains the ImageMagick's DLLs and EXEs version 6.3.5-Q16

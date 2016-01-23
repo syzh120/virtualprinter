@@ -1,0 +1,353 @@
+<html>
+<body>
+                     <p>This primer will show you how to solve problems quickly. Using a tool that costs nothing, you can solve approximately 50%
+                        of Windows server and workstation crashes in a few minutes. The tool is <a xmlns:o="urn:www.microsoft.com/office" xmlns:st1="urn:www.microsoft.com/smarttags" xmlns:w="urn:www.microsoft.com/word" href="http://msdn.microsoft.com/library/default.asp?url=/library/en-us/tools/tools/windbg_debugger.asp">WinDbg</a> , the free Windows debugger.
+                     </p>
+                     
+    
+
+
+                     <p>You've probably never used the debugger, don't have it and don't want it. After all, it's a developer's tool, not an administrator's,
+                        right? Yes, but what you need to know is remarkably easy to learn, and even a rudimentary familiarity with the debugger could
+                        enhance your skills and your resume.&nbsp;
+                     </p>
+
+                     <p>Still hesitant? Think about this: After rebooting a crashed machine, we've brought up the debugger, opened a memory dump file,
+                        given the debugger a single command, and learned not only that the cause was a driver, but also the driver's name &#8212; all in
+                        less than a minute. Granted, the debugger was installed and configured, we knew what commands to use and what to look for.
+                     </p>
+                     <p>But so will you by the end of this article.</p>
+                     <h3 xmlns:o="urn:www.microsoft.com/office" xmlns:st1="urn:www.microsoft.com/smarttags" xmlns:w="urn:www.microsoft.com/word">Why does Windows crash?</h3>
+                     <p>To date, Windows has been used most commonly on the x86 processor. The x86 implements a protection mechanism that lets multiple
+                        programs run simultaneously without stepping on each other's toes. This protection comes in four levels of privilege or access
+                        to system memory and hardware. Two of these levels are commonly referred to as kernel mode and user mode.
+                     </p>
+                     <p>Kernel mode is the most privileged state of the x86. Both the Windows OS and drivers are considered trusted, and, therefore,
+                        run in kernel mode. This ensures unfettered access to system resources and the ability to maximize performance. Other software
+                        is assigned to user mode, the least-privileged state of the x86, restricting direct access to much of the system. Applications,
+                        such as Microsoft Word, run in user mode to guard against applications corrupting system-level software and each other.
+                     </p>
+
+                     <p>Although kernel-mode software is protected from applications running in user mode, it is not protected from other kernel-mode
+                        software. For example, if a driver erroneously accesses a portion of memory that is being used by other software (or not specifically
+                        marked as accessible to drivers), Windows stops the entire system. This is called a bug check or a crash, and Windows displays
+                        the popularly known Blue Screen of Death (BSOD). About 95% of Windows system crashes are caused by buggy software (or buggy
+                        device drivers), almost all of which come from third-party vendors. The remaining 5% is due to malfunctioning hardware devices,
+                        which often prompt crashes by corrupting memory contents.
+                     </p>
+                     <p>Another little-known fact is that most crashes are repeat crashes. Few administrators can resolve system crashes immediately.
+                        As a result, they typically happen again and again. It's common to see weeks and months pass before the answer is found. By
+                        solving a crash immediately after the first occurrence, you can prevent time-consuming and costly repeat crashes.
+                     </p>
+                     <p>We'll focus on solving crashes under Windows 2000, XP and Server 2003. The process is identical for Windows servers and desktops.
+                        With respect to the debugging and interpretation process, this information applies with remarkably little differences to other
+                        operating systems, such as Linux, Unix and NetWare.
+                     </p>
+                     <h3 xmlns:o="urn:www.microsoft.com/office" xmlns:st1="urn:www.microsoft.com/smarttags" xmlns:w="urn:www.microsoft.com/word">Getting started</h3>
+                     <p>To resolve system crashes using WinDbg, you need the following:</p>
+                     <ul xmlns:o="urn:www.microsoft.com/office" xmlns:st1="urn:www.microsoft.com/smarttags" xmlns:w="urn:www.microsoft.com/word">
+
+                        <li>A PC with 25M bytes of hard-disk space, a live Internet connection and Microsoft Internet Explorer 5.0 or later.</li>
+                        <li>A PC running Windows Server 2003, Windows 2000 or Windows XP.</li>
+                        <li>The latest version of <a href="http://www.microsoft.com/whdc/devtools/debugging/default.mspx">WinDbg</a> .
+                        </li>
+                        <li>A memory dump (the page file must be on C: for Windows to save the memory dump file).</li>
+                     </ul>
+
+                     <p>The memory dump is a snapshot of what the system had in memory when it crashed. Few things are more cryptic than a dump file
+                        at first glance. Yet it is the best place to go for information on a crash. You can try to get this data in other ways - a
+                        user or administrator may remember what the system was doing when it crashed, or that they installed a new hardware device
+                        recently, in which case you can check related drivers or hardware - but they could also forget, providing incomplete or inaccurate
+                        information.
+                     </p>
+                     <p>Windows Server 2003, 2000 and XP create three types of memory dump files:</p>
+                     <p><strong xmlns:o="urn:www.microsoft.com/office" xmlns:st1="urn:www.microsoft.com/smarttags" xmlns:w="urn:www.microsoft.com/word">Small or mini dump</strong> : A mini dump is a tiny 64K-byte file. One reason it's so small is that it doesn't contain any of the binary or executable
+                        files that are in memory at the time of a system crash. The .exes are needed for full and proper crash analysis, therefore,
+                        mini dumps are of limited value without them. However, if you are debugging on the machine that created the dump file, the
+                        debugger can find them in the System Root folders, unless they were changed by a system update (we'll provide a workaround
+                        for this later). XP and Server 2003 produce mini dumps by default, one for each crash event, as well as a full dump file.
+                        While it saves all mini dumps, the system only saves the most recent full dump. Windows 2000 can save mini dumps, but by default
+                        it is set to save only a full dump.
+                     </p>
+                     <p><strong xmlns:o="urn:www.microsoft.com/office" xmlns:st1="urn:www.microsoft.com/smarttags" xmlns:w="urn:www.microsoft.com/word">Kernel dump</strong> : This is equal to the amount of RAM occupied by the operating system's kernel. For an XP PC with 512M bytes of RAM, this
+                        is usually around 60M bytes, but it can vary. For most purposes, this crash dump is the most useful. It is significantly smaller
+                        than the full memory dump, but it only omits those portions of memory that are unlikely to have been involved in the crash.
+                     </p>
+                     <p><strong xmlns:o="urn:www.microsoft.com/office" xmlns:st1="urn:www.microsoft.com/smarttags" xmlns:w="urn:www.microsoft.com/word">Complete or full dump</strong> : This is equal to the amount of RAM in the box. Therefore, a machine with 512M bytes of RAM creates a 512M-byte dump file
+                        (plus a little). While a full dump contains all possible data and executables the memory has to offer, its sheer size can
+                        make it awkward to save or transfer to another machine for debugging. Windows 2000 produces a full dump by default.
+                     </p>
+
+                     <p>Because XP and 2003 are set up to save a mini dump for every crash event, there should be a mini dump file for every crash
+                        the machine has had since it was turned on. This data can be extremely valuable, giving you a rich history to inspect.
+                     </p>
+                     <h3 xmlns:o="urn:www.microsoft.com/office" xmlns:st1="urn:www.microsoft.com/smarttags" xmlns:w="urn:www.microsoft.com/word">Saving a memory dump</h3>
+                     <p>To resolve system crashes through the inspection of memory dumps, set your servers and PCs to automatically save them with
+                        these steps:
+                     </p>
+                     <ol xmlns:o="urn:www.microsoft.com/office" xmlns:st1="urn:www.microsoft.com/smarttags" xmlns:w="urn:www.microsoft.com/word">
+                        <li>Right-click on My Computer</li>
+                        <li>Select Properties</li>
+
+                        <li>Select Advanced</li>
+                        <li>In the Start up and Recovery section, select Settings; this displays the Startup and Recovery dialog box</li>
+                        <li>In the Write debugging information section, select kernel memory dump</li>
+                     </ol>
+                     <p>While still in the Start up and Recovery dialog box, ensure that the following options are checked in the System failure section:</p>
+                     <ul xmlns:o="urn:www.microsoft.com/office" xmlns:st1="urn:www.microsoft.com/smarttags" xmlns:w="urn:www.microsoft.com/word">
+                        <li>Write an event to the system log</li>
+
+                        <li>Send an administrative alert</li>
+                        <li>Automatically restart</li>
+                     </ul>
+                     <p>In the Write debugging information, you have the option to save only the most recent dump file or to have the system rename
+                        the existing dump file before it creates a new one. We prefer saving the dump files because previous dump files may provide
+                        additional or different information - however, space can be an issue, so set this option according to your needs.
+                     </p>
+                     <p>The Write debugging information section also tells you where the dump file will be created. On XP and 2003 systems, mini dumps
+                        are located at %SystemRoot%\Minidump, or c:\Windows\Minidump; kernel and full dumps are located at %SystemRoot%\MEMORY.DMP
+                        or c:\Windows\MEMORY.DMP. For Windows 2000, memory dump files are located at c:\winnt\memory.dmp.
+                     </p>
+                     <p>If you don't have a dump file on your machine, you can get one from another system or download one <a xmlns:o="urn:www.microsoft.com/office" xmlns:st1="urn:www.microsoft.com/smarttags" xmlns:w="urn:www.microsoft.com/word" href="http://www.alexander.com/download/sampledump.zip">here</a>. This kernel dump is about 20M bytes zipped and 60M bytes extracted. It was created using a testing tool that generates a
+                        system crash.
+                        &nbsp;&nbsp;<a href="?page=2">Continued</a>
+
+                     </p>
+
+
+
+                     <h3 xmlns:o="urn:www.microsoft.com/office" xmlns:st1="urn:www.microsoft.com/smarttags" xmlns:w="urn:www.microsoft.com/word">Getting the debugger</h3>
+                     <p>The debugger is free and available from <a xmlns:o="urn:www.microsoft.com/office" xmlns:st1="urn:www.microsoft.com/smarttags" xmlns:w="urn:www.microsoft.com/word" href="http://www.microsoft.com/whdc/devtools/debugging/default.mspx">Microsoft's Web site</a>. At the site, scroll down until you see the heading, "Installing Debugging Tools for Windows." Select the link, "Install
+                        32-bit version&#8230;&#8221; and then select the most recent non-beta version and install it. The most recent versions are about 12M-byte
+                        downloads. You can do the installation on a PC without restarting it (Don&#8217;t be surprised if the site has changed somewhat.
+                        Microsoft keeps improving the debugger with releases at least once per year.).
+                     </p>
+
+
+                     <p>This distribution includes KD.EXE, the command-line kernel debugger; NTSD.EXE, the command-line user-mode debugger; CDB.EXE,
+                        the command-line user-mode debugger (a variant of ntsd.exe); and WinDbg, the GUI version of the debugger. WinDbg supports
+                        kernel-mode and user-mode debugging, so WinDbg is the one we'll use here.
+                     </p>
+                     <h3 xmlns:o="urn:www.microsoft.com/office" xmlns:st1="urn:www.microsoft.com/smarttags" xmlns:w="urn:www.microsoft.com/word">Setting up the debugger</h3>
+                     <p>There are two ways to look at crash data: View what's in memory while the system is stopped (by linking it to a running PC
+                        with a null-modem cable, or invoking a product that you pre-installed on the system, such as SoftICE, which lets you step
+                        through the code in memory line by line)
+                     </p>
+                     <p>Null-modem cables are serial cables that have been configured to send data between two serial ports. They are available at
+                        most computer stores. Do not confuse null-modem cables with standard serial cables, which do not connect serial ports.
+                     </p>
+                     <p>Given that minimizing interruptions is the goal of most administrators, we opt for the second way: Restart the server or PC,
+                        launch the debugger, and open the dump file.
+                     </p>
+
+                     <p>From the program group Debugging Tools for Windows, select WinDbg. After the debugger comes up, you'll immediately notice
+                        a lot of &#8230; nothing. A blank screen. That's because you have to specify a dump file to analyze and download symbol tables to
+                        use in the analysis. Let's take care of the symbol files first.
+                     </p>
+                     <p>Symbol tables are a byproduct of compilation. When a program is compiled, the source code is translated from a high-level
+                        language into machine code. At the same time, the compiler creates a symbol file with a list of identifiers, their locations
+                        in the program, and their attributes. Some identifiers are global and local variables, and function calls. A program doesn't
+                        require this information to execute. Therefore, it can be taken out and stored in another file, reducing the size of the final
+                        executable.
+                     </p>
+                     <p><br xmlns:o="urn:www.microsoft.com/office" xmlns:st1="urn:www.microsoft.com/smarttags" xmlns:w="urn:www.microsoft.com/word">Smaller executables take up less disk space and load into memory faster than large ones. But there's a flip side: When a program
+                        causes a problem, the OS knows only the hex address at which a problem occurred. You need something more than that to determine
+                        which program was using that memory space and what it was trying to do. Windows symbol tables hold the answer. Accessing these
+                        tables is like laying a map over your system's memory.
+                     </p>
+                     <p>Windows symbol files are free from Microsoft's Web site, and the debugger can retrieve them automatically. To set up the debugger
+                        to do this, verify that you have a live Internet connection and set the symbol file path in WinDbg by selecting File | Symbol
+                        File Path. Then enter the following string:
+                     </p>
+                     <p>SRV*c:\local cache*http://msdl.microsoft.com/download/symbols</p>
+
+                     <p>Substituting your own directory path for c:\local cache. For example, if you want the symbols to be placed in c:\symbols,
+                        then set your symbol path to
+                     </p>
+                     <p>SRV*c:\symbols*http://msdl.microsoft.com/download/symbols</p>
+                     <p>The location of the symbol table is up to you.</p>
+                     <p>When opening a memory dump, WinDbg will look at the EXE/DLLs and extract version information. It then creates a request to
+                        the symbol server at Microsoft, which includes this version information, and locates the precise symbol tables to draw information
+                        from. If you have difficulty retrieving symbol files, check that your firewall permits access to http://msdl.microsoft.com.
+                     </p>
+                     <p>If you restrict your debugging to memory dumps from the machine you are on, you will need relatively little hard-disk space
+                        for the symbol tables. In most cases 5M-bytes will be more than sufficient. But if you plan to look at dumps from other machines
+                        that have different Windows versions and patch levels, you'll need more space for the additional symbol files that support
+                        those versions.
+                     </p>
+                     <p><strong xmlns:o="urn:www.microsoft.com/office" xmlns:st1="urn:www.microsoft.com/smarttags" xmlns:w="urn:www.microsoft.com/word">System update workaround</strong></p>
+
+                     <p>If you are trying to analyze mini dumps on a machine that had updates installed after the dumps were created (or if you're
+                        analyzing a mini dump file from another machine), the drivers found in your system root will be different (newer) than the
+                        ones present when the mini dump were created. To solve this, set the executable image file path by selecting File | Image
+                        File Path. Then enter the following string: c:\windows\System32; c:\windows\system\System32; http://www.alexander.com/SymServe.
+                     </p>
+                     <p><strong xmlns:o="urn:www.microsoft.com/office" xmlns:st1="urn:www.microsoft.com/smarttags" xmlns:w="urn:www.microsoft.com/word">Loading the dump file</strong></p>
+                     <p>To open the dump file that you want to analyze, select File | Open Crash Dump. You'll be asked if you want to save workspace
+                        information. Click Yes if you want it to remember where the dump file is. WinDbg looks for the Windows symbol files. WinDbg
+                        references the symbol file path, accesses microsoft.com, and displays the results. Close the Disassembly window so you are
+                        working in the Command window.
+                     </p>
+                     <p><strong xmlns:o="urn:www.microsoft.com/office" xmlns:st1="urn:www.microsoft.com/smarttags" xmlns:w="urn:www.microsoft.com/word">NOTE</strong>: Don&#8217;t be surprised if the debugger seems rather busy following opening of the dump file, especially the first time you try
+                        it. It needs to retrieve symbols and, in the case of mini dumps, it needs to retrieve the binaries. This may take a few minutes.
+                        Also, the newer release of WinDbg seems to take longer retrieving driver data as well. Be patient. It is worth the wait!
+                     </p>
+                     <p>At this point, WinDbg may return an error message, such as the following one, indicating it could not find the correct symbol
+                        file.
+                     </p>
+
+                     <p>*** ERROR: Symbol file could not be found. Defaulted to export symbols for ntoskrnl.exe -</p>
+                     <p>If it does, one of the following three things is usually wrong:</p>
+                     <ul xmlns:o="urn:www.microsoft.com/office" xmlns:st1="urn:www.microsoft.com/smarttags" xmlns:w="urn:www.microsoft.com/word">
+                        <li>Your path is incorrect; check to make sure there are no typos or other errors in the symbol file path you entered earlier.</li>
+                        <li>Your connection failed; check your Internet connection to make sure it is working properly.</li>
+                        <li>Your firewall blocked access to the symbol files or damaged the symbol file during retrieval.</li>
+
+                     </ul>
+                     <p>If your path and connection are solid, then it's likely that the problem is your firewall. If a firewall initially blocks
+                        WinDbg from downloading a symbol table, it can result in a corrupted symbol file. Unblocking the firewall and attempting to
+                        download the symbol file again does not work; the symbol file remains damaged. The quickest fix is to close WinDbg, delete
+                        the symbols folder (which you most likely set at c:\symbols), and unblock the firewall. Now, reopen WinDbg and a dump file.
+                        The debugger will recreate the folder and re-download the symbols.
+                     </p>
+                     <p>If you see this message, "***** Kernel symbols are WRONG. Please fix symbols to do analysis.", WinDbg was unable to retrieve
+                        the proper symbols and it will resort to using the default symbol table. But as the warning suggests, it cannot produce accurate
+                        results. Remember that symbol tables are generated when programs are compiled, so there is a symbol table file for every Windows
+                        version, patch, hot fix, and so on. Using the wrong symbols to track down the cause of a crash is like trying to steer a ship
+                        into Boston Harbor with a chart for San Diego. You must use the right ones, so go back up to the section above and ensure
+                        you have the right path set, the connection is good, and it is not blocked.
+                     </p>
+                     <p>Look through WinDbg's output. You may see an error message similar to the following that indicates it could not locate the
+                        symbols for a third-party driver.
+                     </p>
+                     <p>&nbsp;*** ERROR: Module load completed but symbols could not be loaded for driver.dll<br xmlns:o="urn:www.microsoft.com/office" xmlns:st1="urn:www.microsoft.com/smarttags" xmlns:w="urn:www.microsoft.com/word">&nbsp;Unable to translate address bf9a2700 with prototype PTE<br xmlns:o="urn:www.microsoft.com/office" xmlns:st1="urn:www.microsoft.com/smarttags" xmlns:w="urn:www.microsoft.com/word">&nbsp;Probably caused by: driver.dll (driver+44bd)
+                     </p>
+
+                     <p>This means that the debugger has found a driver is at fault but, being a third-party driver, there are no symbols for it (Microsoft
+                        does not store all of the third-party drivers). You can ignore this. Vendors do not typically ship drivers with symbol files,
+                        and they aren't necessary to your work; you can pinpoint the problem driver without them.
+                        &nbsp;&nbsp;<a href="?page=3">Continued</a>
+                     </p>
+
+
+
+                     <h3 xmlns:o="urn:www.microsoft.com/office" xmlns:st1="urn:www.microsoft.com/smarttags" xmlns:w="urn:www.microsoft.com/word">Debugger commands</h3>
+
+                     <p>With the dump file loaded into WinDbg, it's time to ask for some diagnostic information. While there are loads of commands
+                        to use, two are all you need: !analyze &#8211;v and , and lmv.
+                     </p>
+                     <p>!analyze &#8211;v displays information describing the state of a system when it crashed, the fault encountered, and who is the primary
+                        suspect.
+                     </p>
+                     <p>lmv displays a list of drivers and their path, version and vendor information. It often includes a product description.</p>
+                     <p>If you want to sound like a software engineer, or if at least you don't want to sound clueless, here's how you pronounce the
+                        first command: "bang analyze dash vee."
+                     </p>
+                     <p><strong xmlns:o="urn:www.microsoft.com/office" xmlns:st1="urn:www.microsoft.com/smarttags" xmlns:w="urn:www.microsoft.com/word">Analysis with !analyze &#8211;v</strong></p>
+
+                     <p>Type !analyze &#8211;v on the command line at the bottom of the Command window. The explanation it gives is a combination of English
+                        and programmer-speak, but it is nonetheless a great start. In fact, in many cases you may not need to go any further. If you
+                        recognize the cause of the crash, you're probably done.
+                     </p>
+                     <p>Here's an example. After typing! analyze &#8211;v, we receive the following output:</p>
+                     <p>kd&gt; !analyze -v</p>
+                     <p>KERNEL_MODE_EXCEPTION_NOT_HANDLED (8e)</p>
+                     <p>(This is a very common bugcheck. Usually the exception address pinpoints the driver/function that caused the problem. Always
+                        note this address as well as the link date of the driver/image that contains this address.)
+                     </p>
+
+                     <p>Arguments:<br xmlns:o="urn:www.microsoft.com/office" xmlns:st1="urn:www.microsoft.com/smarttags" xmlns:w="urn:www.microsoft.com/word">Arg1: c0000005, The exception code that was not handled<br xmlns:o="urn:www.microsoft.com/office" xmlns:st1="urn:www.microsoft.com/smarttags" xmlns:w="urn:www.microsoft.com/word">Arg2: bf9bc4bd, The address that the exception occurred at<br xmlns:o="urn:www.microsoft.com/office" xmlns:st1="urn:www.microsoft.com/smarttags" xmlns:w="urn:www.microsoft.com/word">Arg3: f69f02bc, Trap Frame<br xmlns:o="urn:www.microsoft.com/office" xmlns:st1="urn:www.microsoft.com/smarttags" xmlns:w="urn:www.microsoft.com/word">Arg4: 00000000
+                     </p>
+                     <p>Debugging Details:<br xmlns:o="urn:www.microsoft.com/office" xmlns:st1="urn:www.microsoft.com/smarttags" xmlns:w="urn:www.microsoft.com/word">------------------<br xmlns:o="urn:www.microsoft.com/office" xmlns:st1="urn:www.microsoft.com/smarttags" xmlns:w="urn:www.microsoft.com/word">EXCEPTION_CODE: c0000005
+                     </p>
+                     <p>FAULTING_IP:<br xmlns:o="urn:www.microsoft.com/office" xmlns:st1="urn:www.microsoft.com/smarttags" xmlns:w="urn:www.microsoft.com/word">vdriver+44bd<br xmlns:o="urn:www.microsoft.com/office" xmlns:st1="urn:www.microsoft.com/smarttags" xmlns:w="urn:www.microsoft.com/word">bf9bc4bd 8b4014&nbsp;&nbsp; mov&nbsp; eax,[eax+0x14]
+                     </p>
+
+                     <p>TRAP_FRAME: f69f02bc -- (.trap fffffffff69f02bc)<br xmlns:o="urn:www.microsoft.com/office" xmlns:st1="urn:www.microsoft.com/smarttags" xmlns:w="urn:www.microsoft.com/word">ErrCode = 00000000<br xmlns:o="urn:www.microsoft.com/office" xmlns:st1="urn:www.microsoft.com/smarttags" xmlns:w="urn:www.microsoft.com/word">eax=00000000 ebx=01740000 ecx=010886a0 edx=f69f069c esi=fa07d400 edi=e161f7f8<br xmlns:o="urn:www.microsoft.com/office" xmlns:st1="urn:www.microsoft.com/smarttags" xmlns:w="urn:www.microsoft.com/word">eip=bf9bc4bd esp=f69f0330 ebp=f69f0344 iopl=0&nbsp;&nbsp; nv up ei pl nz na pe nc<br xmlns:o="urn:www.microsoft.com/office" xmlns:st1="urn:www.microsoft.com/smarttags" xmlns:w="urn:www.microsoft.com/word">cs=0008 ss=0010 ds=0023 es=0023 fs=0030 gs=0000&nbsp;&nbsp;&nbsp; efl=00010202<br xmlns:o="urn:www.microsoft.com/office" xmlns:st1="urn:www.microsoft.com/smarttags" xmlns:w="urn:www.microsoft.com/word">vdriver+44bd:<br xmlns:o="urn:www.microsoft.com/office" xmlns:st1="urn:www.microsoft.com/smarttags" xmlns:w="urn:www.microsoft.com/word">bf9bc4bd 8b4014&nbsp;&nbsp; mov&nbsp; eax,[eax+0x14] ds:0023:00000014=????????
+                     </p>
+
+                     <p>DEFAULT_BUCKET_ID: DRIVER_FAULT<br xmlns:o="urn:www.microsoft.com/office" xmlns:st1="urn:www.microsoft.com/smarttags" xmlns:w="urn:www.microsoft.com/word">BUGCHECK_STR: 0x8E<br xmlns:o="urn:www.microsoft.com/office" xmlns:st1="urn:www.microsoft.com/smarttags" xmlns:w="urn:www.microsoft.com/word">LAST_CONTROL_TRANSFER: from bf9ba5cf to bf9bc4bd
+                     </p>
+                     <p>STACK_TEXT:<br xmlns:o="urn:www.microsoft.com/office" xmlns:st1="urn:www.microsoft.com/smarttags" xmlns:w="urn:www.microsoft.com/word">f69f0344 bf9ba5cf e161f7f8 e17f8e30 e21e4530 vdriver+0x44bd<br xmlns:o="urn:www.microsoft.com/office" xmlns:st1="urn:www.microsoft.com/smarttags" xmlns:w="urn:www.microsoft.com/word">f69f06b0 f69f06e0 e2638678 f69f06e4 f69f0890 vdriver+0x25cf<br xmlns:o="urn:www.microsoft.com/office" xmlns:st1="urn:www.microsoft.com/smarttags" xmlns:w="urn:www.microsoft.com/word">e1bd6b90 1f0507b6 00000000 e1622008 00000010 0xf69f06e0<br xmlns:o="urn:www.microsoft.com/office" xmlns:st1="urn:www.microsoft.com/smarttags" xmlns:w="urn:www.microsoft.com/word">00000000 00000000 00000000 00000000 00000000 0x1f0507b6<br xmlns:o="urn:www.microsoft.com/office" xmlns:st1="urn:www.microsoft.com/smarttags" xmlns:w="urn:www.microsoft.com/word">f69f0bf0 805766ef f69f0c78 f69f0c7c f69f0c8c nt!KiCallUserMode+0x4<br xmlns:o="urn:www.microsoft.com/office" xmlns:st1="urn:www.microsoft.com/smarttags" xmlns:w="urn:www.microsoft.com/word">f69f0c4c bf8733cd 00000002 f69f0c9c 00000018 nt!KeUserModeCallback+0x87<br xmlns:o="urn:www.microsoft.com/office" xmlns:st1="urn:www.microsoft.com/smarttags" xmlns:w="urn:www.microsoft.com/word">f69f0ccc bf8722a5 bc667998 0000000f 00000000 win32k!SfnDWORD+0xa0<br xmlns:o="urn:www.microsoft.com/office" xmlns:st1="urn:www.microsoft.com/smarttags" xmlns:w="urn:www.microsoft.com/word">f69f0d0c bf873b38 7196bc2d f69f0d64 00affed0 win32k!xxxDispatchMessage+0x1c0<br xmlns:o="urn:www.microsoft.com/office" xmlns:st1="urn:www.microsoft.com/smarttags" xmlns:w="urn:www.microsoft.com/word">f69f0d58 805283c1 00afff2c 804d2d30 ffffffff win32k!NtUserDispatchMessage+0x39<br xmlns:o="urn:www.microsoft.com/office" xmlns:st1="urn:www.microsoft.com/smarttags" xmlns:w="urn:www.microsoft.com/word">f69f0d58 7ffe0304 00afff2c 804d2d30 ffffffff nt!KiSystemService+0xc4<br xmlns:o="urn:www.microsoft.com/office" xmlns:st1="urn:www.microsoft.com/smarttags" xmlns:w="urn:www.microsoft.com/word">00afff08 00000000 00000000 00000000 00000000 SharedUserData!SystemCallStub+0x4
+                     </p>
+
+                     <p>FOLLOWUP_IP:<br xmlns:o="urn:www.microsoft.com/office" xmlns:st1="urn:www.microsoft.com/smarttags" xmlns:w="urn:www.microsoft.com/word">vdriver+44bd<br xmlns:o="urn:www.microsoft.com/office" xmlns:st1="urn:www.microsoft.com/smarttags" xmlns:w="urn:www.microsoft.com/word">bf9bc4bd 8b4014&nbsp;&nbsp; mov&nbsp; eax,[eax+0x14]
+                     </p>
+                     <p>FOLLOWUP_NAME: MachineOwner<br xmlns:o="urn:www.microsoft.com/office" xmlns:st1="urn:www.microsoft.com/smarttags" xmlns:w="urn:www.microsoft.com/word">SYMBOL_NAME: vdriver+44bd<br xmlns:o="urn:www.microsoft.com/office" xmlns:st1="urn:www.microsoft.com/smarttags" xmlns:w="urn:www.microsoft.com/word">MODULE_NAME: vdriver<br xmlns:o="urn:www.microsoft.com/office" xmlns:st1="urn:www.microsoft.com/smarttags" xmlns:w="urn:www.microsoft.com/word">IMAGE_NAME: vdriver.dll<br xmlns:o="urn:www.microsoft.com/office" xmlns:st1="urn:www.microsoft.com/smarttags" xmlns:w="urn:www.microsoft.com/word">BUCKET_ID: 0x8E_vdriver+44bd
+                     </p>
+                     <p>Look for a section labeled "Debugging Details." Then, scan down until you find DEFAULT_BUCKET_ID:. This provides the general
+                        category of the failure. It shows DRIVER_FAULT, indicating that a driver is the likely culprit. Scanning further down to IMAGE_NAME,
+                        we see vdriver.dll. We have a suspect!
+                        &nbsp;&nbsp;<a href="?page=4">Continued</a>
+
+                     </p>
+
+
+                     <p><strong xmlns:o="urn:www.microsoft.com/office" xmlns:st1="urn:www.microsoft.com/smarttags" xmlns:w="urn:www.microsoft.com/word">Analysis with lmv</strong></p>
+                     <p>The next step is to confirm the suspect's existence and find any details about him. Typing lm in the command line displays
+                        the loaded modules; v instructs the debugger to output in verbose (detail) mode, showing all known details for the modules.
+                        This is a lot of information. Locating the driver of interest can take a while, so simplify the process by selecting edit
+                        | Find.
+                     </p>
+                     <p>Here's an example of output generated by the lmv command:</p>
+                     <p>kd&gt; lmv<br xmlns:o="urn:www.microsoft.com/office" xmlns:st1="urn:www.microsoft.com/smarttags" xmlns:w="urn:www.microsoft.com/word">&nbsp;bf9b8000 bfa0dc00 VDriver&nbsp; (no symbolic information)<br xmlns:o="urn:www.microsoft.com/office" xmlns:st1="urn:www.microsoft.com/smarttags" xmlns:w="urn:www.microsoft.com/word">&nbsp;Loaded symbol image file: VDriver.dll<br xmlns:o="urn:www.microsoft.com/office" xmlns:st1="urn:www.microsoft.com/smarttags" xmlns:w="urn:www.microsoft.com/word">&nbsp;Image path: \SystemRoot\System32\VDriver.dll<br xmlns:o="urn:www.microsoft.com/office" xmlns:st1="urn:www.microsoft.com/smarttags" xmlns:w="urn:www.microsoft.com/word">&nbsp;Checksum: 00058BD5 Timestamp: Fri Sep 28 10:12:47 2001 (3BB4855F)<br xmlns:o="urn:www.microsoft.com/office" xmlns:st1="urn:www.microsoft.com/smarttags" xmlns:w="urn:www.microsoft.com/word">&nbsp;File version:&nbsp; 5.20.10.1066<br xmlns:o="urn:www.microsoft.com/office" xmlns:st1="urn:www.microsoft.com/smarttags" xmlns:w="urn:www.microsoft.com/word">&nbsp;Product version: 5.20.10.1066<br xmlns:o="urn:www.microsoft.com/office" xmlns:st1="urn:www.microsoft.com/smarttags" xmlns:w="urn:www.microsoft.com/word">&nbsp;File flags:&nbsp; 8 (Mask 3F) Private<br xmlns:o="urn:www.microsoft.com/office" xmlns:st1="urn:www.microsoft.com/smarttags" xmlns:w="urn:www.microsoft.com/word">&nbsp;File OS:&nbsp;&nbsp; 40004 NT Win32<br xmlns:o="urn:www.microsoft.com/office" xmlns:st1="urn:www.microsoft.com/smarttags" xmlns:w="urn:www.microsoft.com/word">&nbsp;File type:&nbsp; 3.4 Driver<br xmlns:o="urn:www.microsoft.com/office" xmlns:st1="urn:www.microsoft.com/smarttags" xmlns:w="urn:www.microsoft.com/word">&nbsp;File date:&nbsp; 00000000.00000000<br xmlns:o="urn:www.microsoft.com/office" xmlns:st1="urn:www.microsoft.com/smarttags" xmlns:w="urn:www.microsoft.com/word">&nbsp;CompanyName:&nbsp; Video Technologies Inc.<br xmlns:o="urn:www.microsoft.com/office" xmlns:st1="urn:www.microsoft.com/smarttags" xmlns:w="urn:www.microsoft.com/word">&nbsp;ProductName:&nbsp; VDisplay Driver for Windows XP<br xmlns:o="urn:www.microsoft.com/office" xmlns:st1="urn:www.microsoft.com/smarttags" xmlns:w="urn:www.microsoft.com/word">&nbsp;InternalName:&nbsp; VDriver.dll<br xmlns:o="urn:www.microsoft.com/office" xmlns:st1="urn:www.microsoft.com/smarttags" xmlns:w="urn:www.microsoft.com/word">&nbsp;OriginalFilename: VDriver.dll<br xmlns:o="urn:www.microsoft.com/office" xmlns:st1="urn:www.microsoft.com/smarttags" xmlns:w="urn:www.microsoft.com/word">&nbsp;ProductVersion: 5.20.10.1066<br xmlns:o="urn:www.microsoft.com/office" xmlns:st1="urn:www.microsoft.com/smarttags" xmlns:w="urn:www.microsoft.com/word">&nbsp;FileVersion:&nbsp; 5.20.10.1066<br xmlns:o="urn:www.microsoft.com/office" xmlns:st1="urn:www.microsoft.com/smarttags" xmlns:w="urn:www.microsoft.com/word">&nbsp;FileDescription: Video Display Driver<br xmlns:o="urn:www.microsoft.com/office" xmlns:st1="urn:www.microsoft.com/smarttags" xmlns:w="urn:www.microsoft.com/word">&nbsp;LegalCopyright: Copyright&copy; Video Technologies Inc. 2000-2004<br xmlns:o="urn:www.microsoft.com/office" xmlns:st1="urn:www.microsoft.com/smarttags" xmlns:w="urn:www.microsoft.com/word">&nbsp;Support:&nbsp;&nbsp; (800) 555-1212
+                     </p>
+
+                     <p>Use File | Find to locate the suspect driver. If the vendor was thorough, complete driver/vendor detail is revealed</p>
+                     <p>The amount of information you see depends upon the driver vendor. Some vendors put little information in their files; others,
+                        such as Veritas, put in everything from the company name to a support telephone number! If a vendor is thorough, the results
+                        from the command will be similar to those shown here.
+                     </p>
+                     <p>After you find the vendor's name, go to its Web site and check for updates, knowledge base articles, and other supporting
+                        information. If such items don't exist or resolve the problem, contact them. They may ask you to send along the debugging
+                        information (it is easy to copy the output from the debugger into an e-mail message or Word document), or they may ask you
+                        to send them the memory dump (zip it up first, both to compress it and protect data integrity).
+                     </p>
+                     <p><strong xmlns:o="urn:www.microsoft.com/office" xmlns:st1="urn:www.microsoft.com/smarttags" xmlns:w="urn:www.microsoft.com/word">Not aways easy</strong></p>
+                     <p>Finding out what went wrong is often a simple process, but it isn't always so. At least 50% of the time (often 70%), the debugger
+                        makes the reason for a crash obvious. But sometimes the information it provides is misleading or insufficient. What do you
+                        do then?
+                     </p>
+                     <h3 xmlns:o="urn:www.microsoft.com/office" xmlns:st1="urn:www.microsoft.com/smarttags" xmlns:w="urn:www.microsoft.com/word">Inconsistent answers</h3>
+
+                     <p>If you have recurring crashes but no clear or consistent reason, it may be a memory problem. Download the free test tool,
+                        <a xmlns:o="urn:www.microsoft.com/office" xmlns:st1="urn:www.microsoft.com/smarttags" xmlns:w="urn:www.microsoft.com/word" href="http://www.memtest86.com/">Memtest86</a>. This simple diagnostic tool is quick and works great.
+                     </p>
+                     <p>Many people discount the possibility of a memory problem, because they account for such a small percentage of system crashes.
+                        However, they are often the cause that keeps you guessing the longest.
+                     </p>
+                     <p><strong xmlns:o="urn:www.microsoft.com/office" xmlns:st1="urn:www.microsoft.com/smarttags" xmlns:w="urn:www.microsoft.com/word">The operating system is the culprit</strong></p>
+                     <p>Not likely! As surprising as it may seem, the operating system is rarely at fault. If ntoskrnl.exe (Windows core) or win32.sys
+                        (the driver that is most responsible for the "GUI" layer on Windows) is named as the culprit, and they often are, don't be
+                        too quick to accept it. It is far more likely that some errant third-party device driver called upon a Windows component to
+                        perform an operation and passed a bad instruction, such as telling it to write to non-existent memory. So, while the operating
+                        system certainly can err, exhaust all other possibilities before you call Microsoft! The same goes for debugging Unix, Linux,
+                        and NetWare.
+                     </p>
+                     <p><strong xmlns:o="urn:www.microsoft.com/office" xmlns:st1="urn:www.microsoft.com/smarttags" xmlns:w="urn:www.microsoft.com/word">Wrong driver named</strong></p>
+
+                     <p>Often you will see an antivirus driver named as the cause. For instance, after using !analyze &#8211;v, the debugger reports a driver
+                        for your antivirus program at the line "IMAGE_NAME". This may well be the case, but bear in mind that such a driver can be
+                        named more often than it is guilty. Here's why: For antivirus code to work it must watch all file openings and closings. To
+                        accomplish this, the code sits at a low layer in the operating system and is constantly working. In fact, it is so busy it
+                        will often be on the stack of function calls that was active when the crash occurred, even if it did not cause it. Because
+                        any third-party driver on that stack immediately becomes suspect, it will often get named. From a mathematical standpoint
+                        it is easy to see how it will so often be on the stack whether it actually caused a problem or not.
+                     </p>
+                     <p><strong xmlns:o="urn:www.microsoft.com/office" xmlns:st1="urn:www.microsoft.com/smarttags" xmlns:w="urn:www.microsoft.com/word">Little or no vendor information</strong></p>
+                     <p>Not all vendors include needed information (not even their name!). If you use the lmv command and turn up nothing, look at
+                        the subdirectories on the image path (if there is one). Often one of them will be the vendor name or a contraction of it.
+                        Another option is to search Google. Type in the driver name and/or folder name. You'll probably find the vendor as well as
+                        others who have posted information regarding the driver.
+                     </p>
+                     <p><strong xmlns:o="urn:www.microsoft.com/office" xmlns:st1="urn:www.microsoft.com/smarttags" xmlns:w="urn:www.microsoft.com/word">Summary</strong></p>
+                     <p>When systems crash your first objective is to get them up and running. Your second is to fix the problem to prevent future
+                        crashes. Be willing to use any tool that can help you &#8212; even the Windows debugger. It won't give you the cause of every crash
+                        event, but it can help you solve 50% or more with two simple commands.
+                     </p>
+
+                     <p><em xmlns:o="urn:www.microsoft.com/office" xmlns:st1="urn:www.microsoft.com/smarttags" xmlns:w="urn:www.microsoft.com/word">Smith is president and founder of Alexander LAN, Inc. He can be reached at</em> <a xmlns:o="urn:www.microsoft.com/office" xmlns:st1="urn:www.microsoft.com/smarttags" xmlns:w="urn:www.microsoft.com/word" href="mailto:dirk@alexander.com"><em>dirk@alexander.com</em></a></p>
+
+
+</body>
+</html>

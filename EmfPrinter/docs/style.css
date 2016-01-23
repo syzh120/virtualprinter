@@ -1,0 +1,248 @@
+/***************************************************************************
+                             Basic headers and text:
+ ***************************************************************************/
+
+body
+{
+    font-family: sans-serif;
+    background: white;
+  
+    margin: 2em 1em 2em 1em;
+}
+
+h1,h2,h3
+{
+    color: #005aa0;
+    text-align: left;
+    margin-bottom: 0.3em;
+}
+
+h1
+{
+    font-size: 185%;
+}
+
+span.author
+{
+    font-size: 50%;
+    font-style: italic;
+    color: #0022aa;
+}
+
+h2
+{
+    font-size: 150%;
+}
+
+h3
+{
+    font-size: 120%;
+    text-indent: 1em;
+}
+
+li
+{
+    margin-top: 1em;
+}
+
+
+
+/***************************************************************************
+                               Program listings:
+ ***************************************************************************/
+
+pre.programlisting
+{
+    border: 1px solid #6185a0;
+    padding: 6px 6px;
+    margin-left: 3em;
+    margin-right: 3em;
+    color: #600000;
+    background: #eeeeee;
+    font-family: monospace;
+    font-size: 90%;
+}
+
+/***************************************************************************
+                               Notes, warnings etc:
+ ***************************************************************************/
+
+.note
+{
+    border: 1px solid #6185a0;
+    padding: 6px 36px;
+    margin-left: 2em;
+    margin-right: 2em;
+
+    background: #fffff5;
+    background-image: url(images/note.png);
+    background-position: center left;
+    background-repeat: no-repeat;
+}
+
+
+div.note
+{
+    font-style: italic;
+}
+
+div.note h3
+{
+    color: red;
+    font-size: 75%;
+}
+
+div.navfooter *
+{
+    font-size: 90%;
+}
+
+
+/***************************************************************************
+                        Links colors and highlighting: 
+ ***************************************************************************/
+
+a:link { color: #0048b3; }
+a:visited { color: #002a6a; }
+a:hover { background: #ffffcd; }
+
+
+/***************************************************************************
+                              Table of contents:
+ ***************************************************************************/
+
+.toc
+{
+    font-size: 90%;
+}
+
+
+
+/***************************************************************************
+                               Special elements:
+ ***************************************************************************/
+
+tt
+{
+    color: #400000;
+}
+
+.term
+{
+    font-weight: bold;
+    
+}
+
+div.variablelist dd
+{
+    margin-bottom: 1em;
+}
+
+.default
+{
+    font-style: italic;
+}
+
+.availability
+{
+    font-style: italic;
+}
+
+.varname
+{
+    color: #400000;
+}
+
+
+div.informaltable table
+{
+  border: 1px solid #6185a0;
+  width: 100%;
+}
+
+div.informaltable td
+{
+  border: 0;
+  padding: 5px;
+}
+
+div.informaltable td.default
+{
+  text-align: right;
+}
+
+div.informaltable th
+{
+  text-align: left;
+  color: #005aa0;
+  border: 0;
+  padding: 5px;
+  background: #fffff5;
+  font-weight: normal;
+  font-style: italic;
+}
+
+td
+{
+  vertical-align: top;
+}
+
+td.varname, td.tagname, td.paramname
+{
+  font-weight: bold;
+}
+
+
+/***************************************************************************
+                                Index sidebar:
+ ***************************************************************************/
+
+.indexSideBar {
+  background-color: white;
+  width: 13em;
+  margin: 2ex 0.75ex 0 2em;
+  padding: 0;
+  float: right;
+  clear: right;
+  border: 1px solid #005aa0;
+}
+
+[class~="indexSideBar"] {
+  margin-right: 1.5ex;
+}
+
+.indexSideBar .sideBarTitle {
+  font-family: sans-serif;
+  color: white;
+  background-color: #005aa0;
+  font-weight: bold;
+  margin: 1.25ex 1ex;
+  padding: 0.9ex 1ex;
+}
+
+.indexSideBar a {
+  background-color: transparent;
+  text-decoration: underline;
+}
+
+.indexSideBar a:hover {
+  text-decoration: none;
+}
+
+.indexSideBar .sideBarText {
+  line-height: 1.5em;
+  padding: 0 2ex 1em 2ex;
+  text-align: center;
+}
+
+.indexSideBar .more {
+  text-decoration: none;
+  text-align: right;
+  margin: 0;
+  padding: 0 2ex 1em 2ex;
+  display: block;
+}
+
+.indexSideBar .more:hover {
+  text-decoration: underline;
+}

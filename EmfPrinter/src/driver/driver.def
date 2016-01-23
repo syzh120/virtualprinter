@@ -1,0 +1,6 @@
+LIBRARY	emfprinter_drv
+
+EXPORTS
+    DllMain
+    DrvQueryDriverInfo
+    DrvEnableDriver
